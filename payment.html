@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Payment Options</title>
+  <style>
+    body {
+      display: flex;
+    }
+    .side-navigation {
+      width: 200px;
+      height: 100vh;
+      background-color: #f1f1f1;
+      padding: 20px;
+    }
+    .side-navigation a {
+      display: block;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: #333;
+    }
+    .side-navigation a:hover {
+      color: #1E90FF;
+    }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+    .payment-section {
+      display: none;
+    }
+    .payment-section.active {
+      display: block;
+    }
+    .icon-container {
+      margin-bottom: 20px;
+      padding: 7px 0;
+      font-size: 54px;
+    }
+  </style>
+</head>
+<body>
+  <div class="side-navigation">
+    <a href="#" onclick="showSection('creditCard')">Credit Card</a>
+    <a href="#" onclick="showSection('debitCard')">Debit Card</a>
+    <a href="#" onclick="showSection('qrCode')">QR Code</a>
+    <a href="#" onclick="showSection('upiPaymentDetails')">UPI App</a>
+    <a href="#" onclick="showSection('bankList')">Bank List</a>
+  </div>
+  <div class="main-content">
+
+    <form id="paymentForm">
+
+      <div class="payment-section" id="creditCard">
+       <label for="debitCardNumber">Credit Card :</label>
+        <!-- Credit Card Payment Form -->
+        <div class="icon-container">
+          <i class="fa fa-cc-visa" style="color:navy;"></i>
+          <i class="fa fa-cc-amex" style="color:blue;"></i>
+          <i class="fa fa-cc-mastercard" style="color:red;"></i>
+          <i class="fa fa-cc-discover" style="color:orange;"></i>
+        </div>
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber">
+        <br>
+
+        <label for="cardHolder">Cardholder Name:</label>
+        <input type="text" id="cardHolder" name="cardHolder">
+        <br>
+
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="month" id="expiryDate" name="expiryDate">
+        <br>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" name="cvv">
+        <br>
+      </div>
+
+      <div class="payment-section" id="debitCard">
+        <!-- Debit Card Payment Form -->
+         <label for="debitCardNumber">Debit Card:</label>
+        <div class="icon-container">
+          <i class="fa fa-cc-visa" style="color:navy;"></i>
+          <i class="fa fa-cc-amex" style="color:blue;"></i>
+          <i class="fa fa-cc-mastercard" style="color:voilet;"></i>
+          <i class="fa fa-cc-discover" style="color:orange;"></i>
+        </div>
+        <label for="debitCardNumber">Debit Card Number:</label>
+        <input type="text" id="debitCardNumber" name="debitCardNumber">
+        <br>
+
+        <label for="debitCardHolder">Cardholder Name:</label>
+        <input type="text" id="debitCardHolder" name="debitCardHolder">
+        <br>
+
+        <label for="debitCardExpiryDate">Expiry Date:</label>
+        <input type="month" id="debitCardExpiryDate" name="debitCardExpiryDate">
+        <br>
+
+        <label for="debitCardCvv">CVV:</label>
+        <input type="text" id="debitCardCvv" name="debitCardCvv">
+        <br>
+      </div>
+
+      <div class="payment-section" id="upiPaymentDetails">
+        <!-- UPI Payment Form -->
+        <label for="upiApp">Select UPI App:</label>
+        <select id="upiApp" onchange="showUPIFields()">
+          <option value="" disabled selected>Select UPI App</option>
+          <option value="Google Pay">Google Pay</option>
+          <option value="PhonePe">PhonePe</option>
+          <option value="Paytm">Paytm</option>
+          <!-- Add more UPI apps as needed -->
+        </select>
+        <br>
+
+        <div id="upiFieldsContainer" style="display:none;">
+          <!-- Show the specific fields based on the selected UPI app -->
+          <div id="googlePayFields" style="display:none;">
+            <label for="googlePayId">Google Pay UPI ID:</label>
+            <input type="text" id="googlePayId" name="googlePayId">
+            
+            <br>
+             <label for="googlePayId">Mobile Number:</label>
+              <input type="text" id="numberInput" oninput="validateNumberInput(event)">
+          </div>
+
+          <div id="phonePeFields" style="display:none;">
+            <label for="phonePeId">PhonePe UPI ID:</label>
+            <input type="text" id="phonePeId" name="phonePeId">
+            <br>
+             <label for="googlePayId">Mobile Number:</label>
+            <input type="text" id="numberInput" oninput="validateNumberInput(event)">
+          </div>
+
+          <div id="paytmFields" style="display:none;">
+            <label for="paytmId">Paytm UPI ID:</label>
+            <input type="text" id="paytmId" name="paytmId">
+            <br>
+         <label for="paytmId">Mobile Number:</label>   
+              <input type="text" id="numberInput" oninput="validateNumberInput(event)">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="payment-section" id="qrCodePaymentDetails">
+        <!-- QR Code Payment Section -->
+        <p>Scan the QR code using your UPI app to make the payment.</p>
+        <!-- Placeholder for the QR code image -->
+      </div>
+
+      <button type="submit">Pay Now</button>
+    </form>
+  </div>
+
+ 
+  <script>
+    function showSection(sectionId) {
+      const sections = document.getElementsByClassName("payment-section");
+      for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active");
+      }
+      document.getElementById(sectionId).classList.add("active");
+    }
+
+    function showUPIFields() {
+      const selectedUPIApp = document.getElementById("upiApp").value;
+      const upiFieldsContainer = document.getElementById("upiFieldsContainer");
+
+      // Hide all UPI fields first
+      const upiFields = upiFieldsContainer.getElementsByTagName("div");
+      for (let i = 0; i < upiFields.length; i++) {
+        upiFields[i].style.display = "none";
+      }
+
+      if (selectedUPIApp === "") {
+        upiFieldsContainer.style.display = "none";
+      } else {
+        upiFieldsContainer.style.display = "block";
+
+        // Show the specific fields based on the selected UPI app
+        const googlePayFields = document.getElementById("googlePayFields");
+        const phonePeFields = document.getElementById("phonePeFields");
+        const paytmFields = document.getElementById("paytmFields");
+
+        if (selectedUPIApp === "Google Pay") {
+          googlePayFields.style.display = "block";
+        } else if (selectedUPIApp === "PhonePe") {
+          phonePeFields.style.display = "block";
+        } else if (selectedUPIApp === "Paytm") {
+          paytmFields.style.display = "block";
+        }
+      }
+    }
+
+    // Show Credit Card section by default when the page loads
+    document.addEventListener("DOMContentLoaded", function() {
+      showSection("creditCard");
+    });
+  </script>
+</body>
+</html>
